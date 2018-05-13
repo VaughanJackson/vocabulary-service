@@ -194,3 +194,11 @@ vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ curl http://lo
   }
 }
 ```
+
+## Automated Integration Tests
+
+These have been implemented in the `VocabularyApplicationIntegrationTest` class and fall into two categories:
+
+1. Tests that assert correct behaviour of the supported query modes
+2. Tests that assert that the CRUD operations, supported by default when using a Spring Data REST Repository such as
+`CharacterRepository`, have been effectively disabled here. This service is intended to provide read access only.  

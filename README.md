@@ -2,7 +2,7 @@
 
 * `Spring Boot Initializr` generated REST service that serves up [Jun Da's Modern Chinese 汉字 vocabulary](http://lingua.mtsu.edu/chinese-computing/statistics/) from a `MongoDB` 
   database. 
-* You can build, test and use the service [locally on your host machine](#Build), or you can use [Docker containers](#Using Docker) to do so. 
+* You can build, test and use the service [locally on your host machine](#build), or you can use [Docker containers](#using-docker) to do so. 
   
 ## Build
 

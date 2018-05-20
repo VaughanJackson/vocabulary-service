@@ -25,6 +25,7 @@ public class VocabularyApplicationIntegrationTest {
 
     private static final String BASE_URL = "http://localhost/characters/";
     private static final String CHARACTER_SOUGHT = "表";
+    // NOTE actual CHARACTER_ID will vary from collecton load to collection load. This is just an example value.
     private static final String CHARACTER_ID = "5ad34cf0bb426a874d0932bc";
 
     // TODO Use Jackson/Spring Boot to serialise a Character to JSON?
@@ -80,7 +81,6 @@ public class VocabularyApplicationIntegrationTest {
                             .param("汉字", CHARACTER_SOUGHT)).andDo(print())
                             .andExpect(status().isOk())
                             .andExpect(jsonPath("$._embedded.characters[0].character").value(CHARACTER_SOUGHT))
-                            .andExpect(jsonPath("$._embedded.characters[0]._links.self.href").value(BASE_URL + CHARACTER_ID))
                             .andReturn();
     }
 

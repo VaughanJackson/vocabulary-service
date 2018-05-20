@@ -2,33 +2,39 @@
 
 * `Spring Boot Initializr` generated REST service that serves up [Jun Da's Modern Chinese 汉字 vocabulary](http://lingua.mtsu.edu/chinese-computing/statistics/) from a `MongoDB` 
   database. 
+* You can build, test and use the service [locally on your host machine](#Build), or you can use [Docker containers](#Using Docker) to do so. 
   
 ## Build
 
-* `mvn install`
+* `mvn clean package`
 
 ```text
-vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ mvn install
+vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ mvn clean package
 [INFO] Scanning for projects...
 [INFO]                                                                         
 [INFO] ------------------------------------------------------------------------
 [INFO] Building vocabulary-service 0.0.1-SNAPSHOT
 [INFO] ------------------------------------------------------------------------
 [INFO] 
-[INFO] --- maven-resources-plugin:3.0.1:resources (default-resources) @ vocabulary-service ---
+[INFO] --- maven-clean-plugin:3.0.0:clean (default-clean) @ vocabulary-service ---
+[INFO] Deleting /Users/vaughanjackson/Dropbox/Projects/VocabularyDashboard/vocabulary-service/target
 ...
-[INFO] --- maven-install-plugin:2.5.2:install (default-install) @ vocabulary-service ---
-[INFO] Installing /Users/vaughanjackson/Dropbox/Projects/VocabularyDashboard/vocabulary-service/target/vocabulary-service-0.0.1-SNAPSHOT.jar to /Users/vaughanjackson/.m2/repository/com/learner/vocabulary-service/0.0.1-SNAPSHOT/vocabulary-service-0.0.1-SNAPSHOT.jar
-[INFO] Installing /Users/vaughanjackson/Dropbox/Projects/VocabularyDashboard/vocabulary-service/pom.xml to /Users/vaughanjackson/.m2/repository/com/learner/vocabulary-service/0.0.1-SNAPSHOT/vocabulary-service-0.0.1-SNAPSHOT.pom
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- maven-jar-plugin:3.0.2:jar (default-jar) @ vocabulary-service ---
+[INFO] Building jar: /Users/vaughanjackson/Dropbox/Projects/VocabularyDashboard/vocabulary-service/target/vocabulary-service-0.0.1-SNAPSHOT.jar
+[INFO] 
+[INFO] --- spring-boot-maven-plugin:2.0.1.RELEASE:repackage (default) @ vocabulary-service ---
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time: 10.776 s
-[INFO] Finished at: 2018-04-28T15:23:40+01:00
-[INFO] Final Memory: 41M/597M
+[INFO] Total time: 8.456 s
+[INFO] Finished at: 2018-05-20T13:31:26+01:00
+[INFO] Final Memory: 41M/532M
 [INFO] ------------------------------------------------------------------------
-vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ 
-
 ```   
  
 ## Execution
@@ -75,6 +81,8 @@ vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $
 ```  
 
 * Use a tool such as `Robo 3T` to inspect the resulting vocabulary.
+* Typically connect `Robo 3T` to `localhost:27017` to inspect the database if you have set it up on your host machine.
+* Alternatively, if you working with the dockerised version, connect `Robo 3T` to `localhost:27020`.
 
 ### Query Modes
 
@@ -164,7 +172,8 @@ vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ curl "http://l
 
 #### Individual character by character (汉字)
 
-* The url in the example below actually appears as `http://localhost:8080/characters/search/findByCharacter?汉字=中` in the browser address bar before being copied and pasted into a terminal session for use with `curl`):
+* Use the URL below in a browser instead if you prefer. 
+* The URL in the example below actually appears as `http://localhost:8080/characters/search/findByCharacter?汉字=中` in the browser address bar before being copied and pasted into a terminal session for use with `curl`):
 
 ```text
 vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ curl http://localhost:8080/characters/search/findByCharacter?%E6%B1%89%E5%AD%97=%E4%B8%AD
@@ -202,3 +211,84 @@ These have been implemented in the `VocabularyApplicationIntegrationTest` class 
 1. Tests that assert correct behaviour of the supported query modes
 2. Tests that assert that the CRUD operations, supported by default when using a Spring Data REST Repository such as
 `CharacterRepository`, have been effectively disabled here. This service is intended to provide read access only.  
+
+## Using Docker
+
+* If you have [Docker](https://www.docker.com/) set up on your host, you can take advantage of its automation to stand 
+up an instance of the service quickly and conveniently.
+
+### Docker Build
+
+* Use this command line: `docker-compose build`
+
+```text
+vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ docker-compose build
+mongodb uses an image, skipping
+Building mongo-seed
+Step 1/3 : FROM mongo
+ ---> 14c497d5c758
+Step 2/3 : COPY CharFreq-Modern.csv /CharFreq-Modern.csv
+ ---> Using cache
+ ---> 60a4c79469a8
+Step 3/3 : CMD mongoimport      --host mongodb     --db vocabulary     --collection vocabulary     --drop     --type csv     --headerline     --file /CharFreq-Modern.csv
+ ---> Using cache
+ ---> b5f8670ca7bd
+Successfully built b5f8670ca7bd
+Successfully tagged vocabularyservice_mongo-seed:latest
+Building vocabulary_service
+Step 1/6 : FROM openjdk:8-jdk-alpine
+ ---> 224765a6bdbe
+Step 2/6 : VOLUME /tmp
+ ---> Using cache
+ ---> a5262424a483
+Step 3/6 : ADD target/vocabulary-service-0.0.1-SNAPSHOT.jar app.jar
+ ---> 28714ebf1638
+Step 4/6 : EXPOSE 8080
+ ---> Running in fe4f843f9750
+Removing intermediate container fe4f843f9750
+ ---> 167f78bbb68a
+Step 5/6 : ENV JAVA_OPTS="-Dspring.profiles.active=docker"
+ ---> Running in 7c82a0f2150c
+Removing intermediate container 7c82a0f2150c
+ ---> b2ef72c80470
+Step 6/6 : ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]
+ ---> Running in b2af32794a74
+Removing intermediate container b2af32794a74
+ ---> 6fb59e6b4917
+Successfully built 6fb59e6b4917
+Successfully tagged vocabularyservice_vocabulary_service:latest
+vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ 
+```
+
+### Docker Execution  
+
+* Use this command line: `docker-compose up`
+
+```text
+vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ docker-compose up
+Creating network "vocabularyservice_default" with the default driver
+Creating vocabdb ... done
+Creating vocabularyservice_vocabulary_service_1 ... done
+Creating vocabularyservice_mongo-seed_1         ... done
+Attaching to vocabdb, vocabularyservice_vocabulary_service_1, vocabularyservice_mongo-seed_1
+vocabdb               | 2018-05-20T12:42:49.869+0000 I CONTROL  [initandlisten] MongoDB starting : pid=1 port=27017 dbpath=/data/db 64-bit host=eb3e9e019db2
+...
+vocabulary_service_1  | 2018-05-20 12:42:57.546  INFO 7 --- [           main] o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+vocabulary_service_1  | 2018-05-20 12:42:57.600  INFO 7 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+vocabulary_service_1  | 2018-05-20 12:42:57.605  INFO 7 --- [           main] c.l.v.VocabularyServiceApplication       : Started VocabularyServiceApplication in 6.326 seconds (JVM running for 7.006)
+```
+
+### Stopping Docker Execution
+
+* Use this command line: `docker-compose down`
+
+```text
+vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ docker-compose down
+Stopping vocabularyservice_vocabulary_service_1 ... done
+Stopping vocabdb                                ... done
+Removing vocabularyservice_mongo-seed_1         ... done
+Removing vocabularyservice_vocabulary_service_1 ... done
+Removing vocabdb                                ... done
+Removing network vocabularyservice_default
+vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ 
+```

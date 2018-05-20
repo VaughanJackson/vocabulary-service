@@ -5,4 +5,4 @@ mongoimport --db vocabulary \
             --collection vocabulary \
             --type csv \
             --headerline \
-            --file src/main/resources/CharFreq-Modern.csv
+            --file mongo-seed/CharFreq-Modern.csv

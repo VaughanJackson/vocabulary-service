@@ -7,22 +7,24 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
+@CrossOrigin
 @RepositoryRestResource
-public interface CharacterRepository extends MongoRepository<Character, String>{
+public interface CharacterRepository extends MongoRepository<Character, String> {
 
 
     /**
      * Redeclares this {@link PagingAndSortingRepository} method to enable it as all
      * REST repository methods are now disabled by default. Enables support for requests such as
      * "http://localhost:8080/characters?page=0&size=3&sort=frequencyRank,asc"
-     * @param var1
+     * @param pageable {@link Pageable}
      * @return page of characters
      */
     @RestResource
-    Page<Character> findAll(Pageable var1);
+    Page<Character> findAll(Pageable pageable);
 
     /**
      * Declares this method to trigger Spring Data REST repository support for search requests

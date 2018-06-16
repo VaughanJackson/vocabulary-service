@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
-@CrossOrigin
 @RepositoryRestResource
 public interface CharacterRepository extends MongoRepository<Character, String> {
 

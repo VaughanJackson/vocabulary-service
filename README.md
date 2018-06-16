@@ -292,3 +292,31 @@ Removing vocabdb                                ... done
 Removing network vocabularyservice_default
 vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ 
 ```
+
+## Allowing Cross-Origin Requests
+
+You may find that your client gets a `403` (Forbidden) response from the service with this payload:
+
+```text
+Invalid CORS request
+```
+
+If your client is hosted at `xyz.com` for example, then you can avoid this problem by setting the `corsAllowedOrigins`
+property in `application.properties`:
+
+```text
+# corsAllowedOrigins - set to a comma separated list of origins to restrict cross-origin requests to those from
+#                      the origins listed, or comment out to open up access to requests from anywhere (not advisable
+#                      in production).
+corsAllowedOrigins=http://xyz.com
+```
+
+Or, for *testing in development only*, you could open up the service to requests from any origin by commenting out the 
+property altogether like this:
+
+```text
+# corsAllowedOrigins - set to a comma separated list of origins to restrict cross-origin requests to those from
+#                      the origins listed, or comment out to open up access to requests from anywhere (not advisable
+#                      in production).
+# corsAllowedOrigins=http://xyz.com
+``` 

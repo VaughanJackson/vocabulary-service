@@ -8,6 +8,9 @@ import org.springframework.data.rest.core.config.RepositoryCorsRegistry;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 import static org.apache.logging.log4j.util.Strings.isEmpty;
 
 /**
@@ -51,11 +54,23 @@ public class RestRepositoryConfiguration extends RepositoryRestConfigurerAdapter
         final RepositoryCorsRegistry registry = config.getCorsRegistry();
         if (!isEmpty(allowedOrigins)) {
             // Restrict cross origin requests to those from the origins listed in allowedOrigins only
-            registry.addMapping("/**").allowedOrigins(allowedOrigins.split(","));
+            registry.addMapping("/**").allowedOrigins(splitAllowedOrigins(allowedOrigins));
         } else {
             // Open up for all cross origin requests
             registry.addMapping("/**");
         }
+    }
+
+    /**
+     * Splits the allowed origins into an array of separate, trimmed origin strings.
+     * @param allowedOrigins the allowed origins list as a single string
+     * @return an array of trimmed allowed origins
+     */
+    private String[] splitAllowedOrigins(final String allowedOrigins) {
+        return Stream.of(allowedOrigins.split(","))
+                .map(String::trim)
+                .collect(toList())
+                .toArray(new String[]{});
     }
 
     /**

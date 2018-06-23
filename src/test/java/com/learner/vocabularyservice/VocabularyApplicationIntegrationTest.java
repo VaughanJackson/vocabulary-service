@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -23,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Integration tests the REST services provided by this application.
- * TODO refactor to reduce code duplication.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -74,15 +75,8 @@ public class VocabularyApplicationIntegrationTest {
      */
     @Test
     public void getPagedCharactersWorksAsExpected() throws Exception {
-        mockMvc.perform(get("/characters")
-            .param("page", "0")
-            .param("size", "3")
-            .param("sort", "frequencyRank"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$._embedded.characters[0].frequencyRank").value(1))
-            .andExpect(jsonPath("$._embedded.characters[1].frequencyRank").value(2))
-            .andExpect(jsonPath("$._embedded.characters[2].frequencyRank").value(3));
+        expectGetCharactersRequestSuccess(mockMvc.perform(getCharactersRequest())
+                .andDo(print()));
 }
 
     /**
@@ -152,26 +146,14 @@ public class VocabularyApplicationIntegrationTest {
 
         for(final String origin: allowedOrigins) {
             LOGGER.debug("Testing allowed origin {} is allowed...", origin);
-            mockMvc.perform(get("/characters")
-                .header("Origin", origin)
-                .param("page", "0")
-                .param("size", "3")
-                .param("sort", "frequencyRank"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$._embedded.characters[0].frequencyRank").value(1))
-                .andExpect(jsonPath("$._embedded.characters[1].frequencyRank").value(2))
-                .andExpect(jsonPath("$._embedded.characters[2].frequencyRank").value(3));
+            expectGetCharactersRequestSuccess(mockMvc.perform(getCharactersRequest().header("Origin", origin))
+                    .andDo(print()));
         }
     }
 
     @Test
     public void testUnauthorisedOriginsForbidden() throws Exception {
-        mockMvc.perform(get("/characters")
-            .header("Origin", "http://unknown")
-            .param("page", "0")
-            .param("size", "3")
-            .param("sort", "frequencyRank"))
+        mockMvc.perform(getCharactersRequest().header("Origin", "http://unknown"))
             .andDo(print())
             .andExpect(status().isForbidden());
     }
@@ -182,15 +164,8 @@ public class VocabularyApplicationIntegrationTest {
      */
     @Test
     public void testUndeclaredOriginAllowed() throws Exception {
-        mockMvc.perform(get("/characters")
-            .param("page", "0")
-            .param("size", "3")
-            .param("sort", "frequencyRank"))
-            .andDo(print())
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$._embedded.characters[0].frequencyRank").value(1))
-            .andExpect(jsonPath("$._embedded.characters[1].frequencyRank").value(2))
-            .andExpect(jsonPath("$._embedded.characters[2].frequencyRank").value(3));
+        expectGetCharactersRequestSuccess(mockMvc.perform(getCharactersRequest())
+            .andDo(print()));
     }
 
     /**
@@ -203,6 +178,31 @@ public class VocabularyApplicationIntegrationTest {
             .map(String::trim)
             .collect(toList())
             .toArray(new String[]{});
+    }
+
+    /**
+     * Utility method factoring out repeated expectations for a successfully performed get characters request.
+     * @param response the outcome of having performed a get characters request
+     * @return a {@link ResultActions} to which further expectations can be applied
+     * @throws Exception should something unexpected happen
+     */
+    private ResultActions expectGetCharactersRequestSuccess(final ResultActions response) throws Exception {
+        return response.andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.characters[0].frequencyRank").value(1))
+                .andExpect(jsonPath("$._embedded.characters[1].frequencyRank").value(2))
+                .andExpect(jsonPath("$._embedded.characters[2].frequencyRank").value(3));
+
+    }
+
+    /**
+     * Utility method factoring out the performance of a fairweather get characters request.
+     * @return the {@link MockHttpServletRequestBuilder} upon which further request characteristics can be built
+     */
+    private MockHttpServletRequestBuilder getCharactersRequest() {
+        return get("/characters")
+            .param("page", "0")
+            .param("size", "3")
+            .param("sort", "frequencyRank");
     }
 
 

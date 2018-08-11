@@ -1,11 +1,10 @@
 package com.learner.vocabularyservice;
 
 import com.learner.vocabularyservice.config.ConfigProperties;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -28,13 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Slf4j
 public class VocabularyApplicationIntegrationTest {
-
-    /**
-     * Logger used by this.
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(VocabularyApplicationIntegrationTest.class);
-
 
     private static final String BASE_URL = "http://localhost/characters/";
     private static final String CHARACTER_SOUGHT = "表";
@@ -147,13 +141,19 @@ public class VocabularyApplicationIntegrationTest {
         for(final String origin: allowedOrigins) {
             LOGGER.debug("Testing allowed origin {} is allowed...", origin);
             expectGetCharactersRequestSuccess(mockMvc.perform(getCharactersRequest().header("Origin", origin))
-                    .andDo(print()));
+                .andDo(print()));
+            mockMvc.perform(getVocabularyRequest().header("Origin", origin))
+                .andDo(print())
+                .andExpect(status().isOk());
         }
     }
 
     @Test
     public void testUnauthorisedOriginsForbidden() throws Exception {
         mockMvc.perform(getCharactersRequest().header("Origin", "http://unknown"))
+            .andDo(print())
+            .andExpect(status().isForbidden());
+        mockMvc.perform(getVocabularyRequest().header("Origin", "http://unknown"))
             .andDo(print())
             .andExpect(status().isForbidden());
     }
@@ -204,6 +204,15 @@ public class VocabularyApplicationIntegrationTest {
             .param("size", "3")
             .param("sort", "frequencyRank");
     }
+
+    /**
+     * Utility method factoring out the performance of a fairweather get vocabulary request.
+     * @return the {@link MockHttpServletRequestBuilder} upon which further request characteristics can be built
+     */
+    private MockHttpServletRequestBuilder getVocabularyRequest() {
+        return get("/vocabulary");
+    }
+
 
 
 }

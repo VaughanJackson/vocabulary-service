@@ -1,7 +1,6 @@
 package com.learner.vocabularyservice.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryCorsRegistry;
@@ -17,12 +16,9 @@ import static org.apache.logging.log4j.util.Strings.isEmpty;
  * Extends {@link RepositoryRestConfigurerAdapter} to configure non-default REST repository settings.
  */
 @Configuration
+@Slf4j // TODO Why doesn't @XSlf4j have LOGGER.debug() etc? - would like to use it for entry(), exit()...
 public class RestRepositoryConfiguration extends RepositoryRestConfigurerAdapter
 {
-    /**
-     * Logger used by this.
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(RestRepositoryConfiguration.class);
 
     /**
      * Configuration properties used by this.

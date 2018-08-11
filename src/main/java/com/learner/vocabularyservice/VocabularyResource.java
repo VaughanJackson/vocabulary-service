@@ -11,13 +11,18 @@ import java.util.List;
 @RestController
 public class VocabularyResource {
 
+    /** The repository used by this service. */
+    private final VocabularyService vocabularyService;
+
     @Autowired
-    private VocabularyService vocabularyService;
+    public VocabularyResource(VocabularyService vocabularyService) {
+        this.vocabularyService = vocabularyService;
+    }
 
     @GetMapping("vocabulary")
     public ResponseEntity<List<Character>> getAllCharacters() {
         final List<Character> characters = vocabularyService.getAllCharacters();
-        return new ResponseEntity<List<Character>>(characters, HttpStatus.OK);
+        return new ResponseEntity<>(characters, HttpStatus.OK);
     }
 
 

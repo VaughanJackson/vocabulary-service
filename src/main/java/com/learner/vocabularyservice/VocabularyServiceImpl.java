@@ -8,9 +8,13 @@ import java.util.List;
 @Service
 public class VocabularyServiceImpl implements VocabularyService {
 
+    /** The repository used by this service. */
+    private final CharacterRepository characterRepository;
 
     @Autowired
-    private CharacterRepository characterRepository;
+    public VocabularyServiceImpl(CharacterRepository characterRepository) {
+        this.characterRepository = characterRepository;
+    }
 
     @Override
     public List<Character> getAllCharacters() {

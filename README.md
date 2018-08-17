@@ -74,15 +74,18 @@ vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ mvn spring-boo
 * Assuming you have a local `MongoDB` database daemon running with little security, load up the vocabulary like this:
 
 ```text
-vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ ./bootstrap.sh 
-2018-04-15T14:00:32.278+0100    connected to: localhost
-2018-04-15T14:00:32.396+0100    imported 9933 documents
-vaughanjackson@Vaughans-MacBook-Pro vocabulary-service (master) $ 
+vaughanjackson@Vaughans-MBP vocabulary-service (master) $ ./bootstrap.sh 
+2018-08-17T16:13:27.434+0100    connected to: localhost
+2018-08-17T16:13:27.563+0100    imported 9933 documents
+MongoDB shell version v4.0.1
+connecting to: mongodb://127.0.0.1:27017/vocabulary
+MongoDB server version: 4.0.1
+vaughanjackson@Vaughans-MBP vocabulary-service (master) $ 
 ```  
 
 * Use a tool such as `Robo 3T` to inspect the resulting vocabulary.
 * Typically connect `Robo 3T` to `localhost:27017` to inspect the database if you have set it up on your host machine.
-* Alternatively, if you working with the dockerised version, connect `Robo 3T` to `localhost:27020`.
+* Alternatively, if you are working with the dockerised version, connect `Robo 3T` to `localhost:27020`.
 
 ### Query Modes
 

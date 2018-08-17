@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-// TODO Add a marginalPercentage or similar
 @Value
 @Document(collection="vocabulary")
 class Character {
@@ -21,6 +20,9 @@ class Character {
 
     @Field("频率")
     int frequency;
+
+    @Field("频率(%)")
+    Double frequencyPercentage;
 
     @Field("累计频率(%)")
     Double cumulativePercentage;

@@ -89,7 +89,7 @@ vaughanjackson@Vaughans-MBP vocabulary-service (master) $
 
 ### Query Modes
 
-* Thus app configures Spring Data MongoDB to support two query modes of interest. 
+* This app configures Spring Data MongoDB to support two query modes of interest. 
 
 #### Paged access to all characters (whole vocabulary)
 

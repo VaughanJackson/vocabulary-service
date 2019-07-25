@@ -19,7 +19,7 @@ services:
     links:
       - mongodb
 
-  vocabulary_service:
+  vocabulary-service:
     build : .
     depends_on:
       - "mongodb"

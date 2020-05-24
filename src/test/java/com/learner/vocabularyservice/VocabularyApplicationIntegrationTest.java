@@ -143,7 +143,7 @@ public class VocabularyApplicationIntegrationTest {
             expectGetCharactersRequestSuccess(mockMvc.perform(getCharactersRequest().header("Origin", origin))
                 .andDo(print()));
             mockMvc.perform(getVocabularyRequest().header("Origin", origin))
-                .andDo(print())
+                /* VS #1 Do NOT output this result running test from Maven, as it leads to a VM crash .andDo(print()) */
                 .andExpect(status().isOk());
         }
     }

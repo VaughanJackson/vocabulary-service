@@ -1,14 +1,11 @@
-FROM mongo
+#!/usr/bin/env bash
+# Script that populates the Mongo DB vocabulary DB frim Jun Da's character frequencies CSV file.
 
-COPY CharFreq-Modern.csv /CharFreq-Modern.csv
-COPY wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
-COPY build-vocab.sh /build-vocab.sh
-RUN chmod +x /build-vocab.sh
+echo "Loading Jun Da's character frequencies..."
 
 # Load vocabulary from Jun Da's CSV file.
 # NOTE entire vocabulary DROPPED AND RECREATED each time (--drop).
-CMD mongoimport  \
+mongoimport  \
     --host mongodb \
     --db vocabulary \
     --collection vocabulary \
@@ -17,7 +14,7 @@ CMD mongoimport  \
     --headerline \
     --file /CharFreq-Modern.csv
 
-COPY calculateFrequency.js /calculateFrequency.js
+echo "Calculating character frequency percentages..."
 
 # Calculate the character frequency percentage for each character in the vocabulary.
-CMD mongo --host mongodb vocabulary /calculateFrequency.js
+mongo --host mongodb vocabulary /calculateFrequency.js

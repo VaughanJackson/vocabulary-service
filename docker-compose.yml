@@ -15,6 +15,7 @@ services:
       - 'mongo:/data/db'
 
   mongo-seed:
+    command: ["./wait-for-it.sh", "mongodb:27017", "--", "./build-vocab.sh"]
     build: ./mongo-seed
     links:
       - mongodb
@@ -22,7 +23,7 @@ services:
   vocabulary-service:
     build : .
     depends_on:
-      - "mongodb"
+      - "mongo-seed"
     ports:
       - "8080:8080"
     environment:

@@ -2,22 +2,9 @@ FROM mongo
 
 COPY CharFreq-Modern.csv /CharFreq-Modern.csv
 COPY wait-for-it.sh /wait-for-it.sh
-RUN chmod +x /wait-for-it.sh
 COPY build-vocab.sh /build-vocab.sh
-RUN chmod +x /build-vocab.sh
-
-# Load vocabulary from Jun Da's CSV file.
-# NOTE entire vocabulary DROPPED AND RECREATED each time (--drop).
-CMD mongoimport  \
-    --host mongodb \
-    --db vocabulary \
-    --collection vocabulary \
-    --drop \
-    --type csv \
-    --headerline \
-    --file /CharFreq-Modern.csv
-
 COPY calculateFrequency.js /calculateFrequency.js
 
-# Calculate the character frequency percentage for each character in the vocabulary.
-CMD mongo --host mongodb vocabulary /calculateFrequency.js
+RUN chmod +x /wait-for-it.sh
+RUN chmod +x /build-vocab.sh
+

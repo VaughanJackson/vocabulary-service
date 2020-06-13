@@ -1,7 +1,7 @@
 // calculateFrequency.js - Uses a MongoDB aggregate pipeline to calculate the frequency (percentage) of each character.
 
 // Calculate '频率(%)' as the difference between the character's cumulative frequency and that of the character before it
-// truncating to 2 dp - idealy this would be rounding to 2 dp.
+// truncating to 2 dp - ideally this would be rounding to 2 dp.
 calculateFrequency = {
     $divide: [
         { $trunc: {

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Script that populates the Mongo DB vocabulary DB frim Jun Da's character frequencies CSV file.
+# Script that populates the Mongo DB vocabulary DB from Jun Da's character frequencies CSV file.
 
 echo "Loading Jun Da's character frequencies..."
 
